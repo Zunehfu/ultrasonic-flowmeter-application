@@ -2,6 +2,7 @@ import { Dimensions, Pressable, Text, View, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import IconTempurature from "../components/IconTempurature";
 import BackButton from "../components/BackButton";
+import IconHumidity from "../components/IconHumidity";
 import { useRouter } from "expo-router";
 import Dart from "../components/Dart";
 // import Chart from "../components/Chart";
@@ -12,7 +13,7 @@ const Home = () => {
   const router = useRouter();
   return (
     <View className="h-full w-full bg-dark">
-      <View style={{ height: 0.38 * screenHeight }}>
+      <View className="pt-10" style={{ height: 0.38 * screenHeight }}>
         <Pressable
           onPress={() => {
             router.push("/home/devices");
@@ -43,8 +44,10 @@ const Home = () => {
             >
               <View className="">
                 <View className="relative">
-                  <Text className="text-dark font-ksemibold text-7xl">125</Text>
-                  <Text className="text-offwhite font-kmedium absolute bottom-5 right-[-55]">
+                  <Text className="text-dark font-ksemibold text-7xl">
+                    12.2
+                  </Text>
+                  <Text className="text-offwhite font-kmedium absolute bottom-3.5 right-[-55]">
                     m³/s
                   </Text>
                 </View>
@@ -66,7 +69,7 @@ const Home = () => {
                   <View className="relative flex h-full w-full bg-offwhite/50 items-center justify-center rounded-lg">
                     <View className="relative">
                       <Text className="font-kblack text-offwhite text-2xl">
-                        110-13
+                        10 - 13
                       </Text>
                       <Text className="absolute font-kmedium text-xs text-offwhite left-7 bottom-[-20]">
                         m³/s
@@ -81,14 +84,14 @@ const Home = () => {
                   <View className="relative flex h-full w-full bg-offwhite/50 items-center justify-center rounded-lg">
                     <View className="relative">
                       <Text className="font-kblack text-offwhite text-2xl">
-                        {"25\u00B0"}
+                        {"58.1"}
                       </Text>
-                      <Text className="absolute font-kmedium text-xs text-offwhite right-2.5 bottom-[-20]">
-                        m³/s
+                      <Text className="absolute font-kmedium text-xs text-offwhite right-1.5 bottom-[-20]">
+                        g/m³
                       </Text>
                     </View>
                     <View className="top-1 left-1 absolute w-8 h-8">
-                      <IconTempurature />
+                      <IconHumidity />
                     </View>
                   </View>
                 </View>

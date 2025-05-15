@@ -1,7 +1,8 @@
-import { StatusBar, View } from "react-native";
+import { SafeAreaView, StatusBar, View } from "react-native";
 import { useState } from "react";
 import { Slot, useRouter } from "expo-router";
 import Tab from "../../components/Tab";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const RootLayout = () => {
   const [tab, setTab] = useState(0);
@@ -29,7 +30,7 @@ const RootLayout = () => {
         }}
         className="flex-row absolute bottom-0 emer bg-dark w-full"
       >
-        <Tab title="Flowmeters" tab_id={0} tab={tab} changeTab={changeTab} />
+        <Tab title="Flow meters" tab_id={0} tab={tab} changeTab={changeTab} />
         <Tab title="Settings" tab_id={1} tab={tab} changeTab={changeTab} />
       </View>
     </View>

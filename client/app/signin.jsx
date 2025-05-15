@@ -56,7 +56,7 @@ const signin = () => {
         >
           <View className="flex items-center justify-center">
             <View className="relative">
-              <Text className="font-ksemibold text-offwhite">SenseFlow</Text>
+              <Text className="font-kbold text-offwhite">SenseFlow</Text>
               <View className="absolute left-[-40] top-[-4]">
                 <Logo />
               </View>
@@ -70,7 +70,7 @@ const signin = () => {
                   Personal | Company email
                 </Text>
                 <TextInput
-                  placeholder="ceo@alibaba.com"
+                  placeholder="abc123@email.com"
                   className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
                   value={email}
                   onChangeText={setEmail}

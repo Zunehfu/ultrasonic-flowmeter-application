@@ -27,12 +27,12 @@ const index = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // const result = await response.json();
-      // if ((result.code = "JWT_ERROR")) {
-      //   setLoading(false);
-      //   return router.push("/signin");
-      // }
-      // console.log(result);
+      const result = await response.json();
+      if ((result.code = "JWT_ERROR")) {
+        setLoading(false);
+        return router.push("/signin");
+      }
+      console.log(result);
 
       router.push("/home/devices");
     } catch (error) {

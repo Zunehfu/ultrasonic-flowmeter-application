@@ -51,7 +51,7 @@ const signup = () => {
         >
           <View className="flex items-center justify-center">
             <View className="relative">
-              <Text className="font-ksemibold text-offwhite">SenseFlow</Text>
+              <Text className="font-kbold text-offwhite">SenseFlow</Text>
               <View className="absolute left-[-40] top-[-4]">
                 <Logo />
               </View>
@@ -65,7 +65,7 @@ const signup = () => {
                   Personal | Company email
                 </Text>
                 <TextInput
-                  placeholder="ceo@alibaba.com"
+                  placeholder="abc123@email.com"
                   className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
                   value={email}
                   onChangeText={setEmail}
@@ -83,7 +83,7 @@ const signup = () => {
               </View>
               <View>
                 <Text className="text-xs font-kmedium text-dark">
-                  Re-enter password
+                  Confirm password
                 </Text>
                 <TextInput
                   placeholder="password@123"
@@ -97,7 +97,7 @@ const signup = () => {
               onPress={onRegister}
               className="bg-dark py-1 rounded-xl px-10"
             >
-              <Text className="text-white font-kmedium">Register</Text>
+              <Text className="text-white font-kmedium">Sign up</Text>
             </Pressable>
             <View className="mt-2 flex flex-row">
               <Text className=" font-kmedium text-xs text-gray-300">
@@ -109,7 +109,7 @@ const signup = () => {
                 }}
               >
                 <Text className="font-kmedium text-xs underline pl-1 text-gray-300">
-                  Log in
+                  Sign in
                 </Text>
               </Pressable>
             </View>

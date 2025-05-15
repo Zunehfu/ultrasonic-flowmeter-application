@@ -9,9 +9,9 @@ const devices = () => {
       start={{ x: 0, y: 0 }}
       className="h-full w-full"
     >
-      <ScrollView className="h-full w-full">
+      <ScrollView className="mt-12 h-full w-full">
         <Text className="ml-3 mt-4 text-white text-2xl font-ksemibold">
-          Your Flowmeters
+          Your Flow Meters
         </Text>
         <Text className="ml-3 mt-3  text-white text-sm font-kmedium">
           20 Flow meters online out of 41
