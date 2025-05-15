@@ -27,15 +27,14 @@ const index = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
-      if ((result.code = "JWT_ERROR")) {
-        setLoading(false);
-        console.log("adooo");
-        return router.push("/signin");
-      }
-      console.log(result);
+      // const result = await response.json();
+      // if ((result.code = "JWT_ERROR")) {
+      //   setLoading(false);
+      //   return router.push("/signin");
+      // }
+      // console.log(result);
 
-      router.push("/devices");
+      router.push("/home/devices");
     } catch (error) {
       console.error("GET error:", error);
     } finally {
