@@ -7,12 +7,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        one: "#f0f5f9", // Custom blue
-        two: "#dbe9f6", // Custom amber
+        dark: "#161716",
+        offwhite: "#f5f5f5",
+        two: "#13003d", // Custom amber
         three: "#608afc",
         four: "#4530b3",
         five: "#412da8",
-        six: "#1a2a51",
+        six: "#f15a16",
+      },
+      fontFamily: {
+        kblack: ["KantoraBlack"],
+        kbold: ["KantoraBold"],
+        kblack: ["KantoraExtraBlack"],
+        kebold: ["KantoraExtraBold"],
+        klight: ["KantoraLight"],
+        kmedium: ["KantoraMedium"],
+        kregular: ["KantoraRegular"],
+        ksemibold: ["KantoraSemiBold"],
+        kthin: ["KantoraThin"],
       },
     },
   },

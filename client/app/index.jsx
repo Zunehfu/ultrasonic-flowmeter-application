@@ -1,24 +1,57 @@
-import { ScrollView, Alert, Pressable, Text, View, Image } from "react-native";
-import React from "react";
-import "../global.css";
-import CardContainer from "../components/CardContainer";
-import { Link } from "expo-router";
-import Logo from "../components/Logo";
-import Display from "../components/Display";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Text, View } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
-const Home = () => {
+const index = () => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const verify = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("token");
+      console.log("token in user storage");
+      console.log(token);
+      if (!token) {
+        console.log("adooooo");
+        router.push("/signin");
+      }
+      const response = await fetch("http://192.168.1.116:3000/auth/verify", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      if ((result.code = "JWT_ERROR")) {
+        setLoading(false);
+        console.log("adooo");
+        return router.push("/signin");
+      }
+      console.log(result);
+
+      router.push("/devices");
+    } catch (error) {
+      console.error("GET error:", error);
+    } finally {
+      console.log("GET request completed");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    verify();
+  }, []);
   return (
-    <View className="m-2 bg-two">
-      <ScrollView className="">
-        <View className="flex flex-row">
-          <Logo />
-          <Text className="text-4xl font-semibold text-six">SenseFlow</Text>
-        </View>
-        <Display />
-        <CardContainer />
-      </ScrollView>
+    <View>
+      <Text>{loading ? "Loading" : "Done"}</Text>
     </View>
   );
 };
 
-export default Home;
+export default index;
