@@ -1,18 +1,21 @@
-import { StatusBar, Text, View, TextInput, Pressable } from "react-native";
-import { useState } from "react";
-import Logo from "../components/Logo.jsx";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import WaterPipe from "../components/WaterPipe";
+import { MotiView } from "moti";
 
 const signup = () => {
   const router = useRouter();
+
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [pass, setPass] = useState("");
   const [repass, setRepass] = useState("");
 
-  const onRegister = async () => {
+  const onSignup = async () => {
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch("http://192.168.8.146:3000/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,6 +29,7 @@ const signup = () => {
 
       const result = await response.json();
       console.log("POST success:", result);
+      router.navigate("/signin");
     } catch (error) {
       console.error("POST error:", error);
     } finally {
@@ -34,90 +38,67 @@ const signup = () => {
   };
 
   return (
-    <View className="bg-dark h-full w-full">
-      <StatusBar
-        barStyle="light-content" // or "dark-content"
-        backgroundColor="#161716" // Android only
-      />
-      <View className="h-full w-full justify-center items-center">
-        <LinearGradient
-          colors={["#10b981", "#0ea5e9"]}
-          style={{
-            elevation: 5,
-            borderRadius: 35,
-          }}
-          start={{ x: 0, y: 0 }}
-          className="rounded-xl py-2 w-96"
+    <SafeAreaView className="">
+      <View className="h-full px-6 flex items-center justify-center">
+        <MotiView
+          from={{ opacity: 0, translateY: -100 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          exit={{ opacity: 0, translateY: -100 }}
+          transition={{ type: "timing", duration: 400 }}
+          className="h-64 aspect-square"
         >
-          <View className="flex items-center justify-center">
-            <View className="relative">
-              <Text className="font-kbold text-offwhite">SenseFlow</Text>
-              <View className="absolute left-[-40] top-[-4]">
-                <Logo />
-              </View>
-            </View>
-            <View
-              className="flex
-            pt-4 p-4 w-full gap-2"
-            >
-              <View>
-                <Text className="text-xs font-kmedium text-dark">
-                  Personal | Company email
-                </Text>
-                <TextInput
-                  placeholder="abc123@email.com"
-                  className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
-                  value={email}
-                  onChangeText={setEmail}
-                />
-              </View>
+          <WaterPipe />
+        </MotiView>
+        <MotiView
+          from={{ opacity: 0, translateX: -100 }}
+          animate={{ opacity: 1, translateX: 0 }}
+          exit={{ opacity: 0, translateX: -100 }}
+          transition={{ type: "timing", duration: 400 }}
+          className="flex-1 gap-5 justify-center w-full"
+        >
+          <Text className="text-3xl font-bold">Sign up Here</Text>
+          <Text className="text-xl">Welcome! You're just one step away</Text>
+          <TextInput
+            placeholder="Company / Name"
+            className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+            value={name}
+            onChangeText={setName}
+          ></TextInput>
+          <TextInput
+            placeholder="Email"
+            className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+            value={email}
+            onChangeText={setEmail}
+          ></TextInput>
+          <TextInput
+            placeholder="Password"
+            className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+            value={pass}
+            onChangeText={setPass}
+          ></TextInput>
+          <TextInput
+            placeholder="Confirm password"
+            className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+            value={repass}
+            onChangeText={setRepass}
+          ></TextInput>
 
-              <View>
-                <Text className="text-xs font-kmedium text-dark">Password</Text>
-                <TextInput
-                  placeholder="password@123"
-                  className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
-                  value={pass}
-                  onChangeText={setPass}
-                ></TextInput>
-              </View>
-              <View>
-                <Text className="text-xs font-kmedium text-dark">
-                  Confirm password
-                </Text>
-                <TextInput
-                  placeholder="password@123"
-                  className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
-                  value={repass}
-                  onChangeText={setRepass}
-                ></TextInput>
-              </View>
-            </View>
+          <View className="justify-center items-center ">
             <Pressable
-              onPress={onRegister}
-              className="bg-dark py-1 rounded-xl px-10"
+              onPress={onSignup}
+              className="w-full h-16 justify-center bg-cyan-500 rounded-xl"
             >
-              <Text className="text-white font-kmedium">Sign up</Text>
-            </Pressable>
-            <View className="mt-2 flex flex-row">
-              <Text className=" font-kmedium text-xs text-gray-300">
-                Already registered?
+              <Text className="text-center text-xl text-offwhite font-semibold">
+                Sign up
               </Text>
-              <Pressable
-                onPress={() => {
-                  router.push("/signin");
-                }}
-              >
-                <Text className="font-kmedium text-xs underline pl-1 text-gray-300">
-                  Sign in
-                </Text>
-              </Pressable>
-            </View>
+            </Pressable>
           </View>
-        </LinearGradient>
+        </MotiView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default signup;
+
+const styles = StyleSheet.create({});

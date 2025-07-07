@@ -1,20 +1,21 @@
 import { View } from "react-native";
 import React from "react";
-import Svg, { Path, Defs, Circle } from "react-native-svg";
+import Svg, { Path, G } from "react-native-svg";
 
-const IconTemperature = () => {
+const IconTemperature = ({ dark, width }) => {
   return (
-    <View className="">
-      <Svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <Svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <G stroke="#000" strokeWidth={width}>
         <Path
-          d="M8 16a1 1 0 100 2 1 1 0 000-2zm0 0l.007-4M8 17l.007.007M20 5a2 2 0 11-4 0 2 2 0 014 0zm-8 12a4 4 0 11-7-2.646V6a3 3 0 016 0v8.354c.622.705 1 1.631 1 2.646z"
-          stroke="#fff"
-          strokeWidth={1.3}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          opacity={1}
+          d="M12 22a5.5 5.5 0 003.439-9.793c-.264-.211-.439-.521-.439-.86V5a3 3 0 10-6 0v6.348c0 .338-.175.648-.439.86A5.5 5.5 0 0012 22z"
         />
-      </Svg>
-    </View>
+        <Path
+          d="M12 14a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 0V5"
+          strokeLinecap="round"
+        />
+      </G>
+    </Svg>
   );
 };
 

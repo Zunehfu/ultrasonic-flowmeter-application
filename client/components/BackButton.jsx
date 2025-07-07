@@ -8,7 +8,7 @@ function BackButton() {
         <Path
           d="M244 400L100 256 244 112"
           fill="none"
-          stroke="#fff"
+          stroke="#212626"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="48px"
@@ -16,7 +16,7 @@ function BackButton() {
         <Path
           d="M120 256L412 256"
           fill="none"
-          stroke="#fff"
+          stroke="#212626"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth="48px"

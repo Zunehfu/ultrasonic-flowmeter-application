@@ -1,19 +1,42 @@
-import { Text, View, TextInput, Pressable, Alert } from "react-native";
-import { useState } from "react";
-import Logo from "../components/Logo.jsx";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+  LayoutAnimation,
+  UIManager,
+  Pressable,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Meter from "../components/Meter";
+import Mobile from "../components/Mobile";
+import Google from "../components/Google";
+import Apple from "../components/Apple";
+import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
+import { useRouter } from "expo-router";
 
-const signin = () => {
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental &&
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const index = () => {
   const router = useRouter();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
-  const onLogin = async () => {
+  const onSignin = async () => {
     try {
       console.log(JSON.stringify({ email, pass }));
-      const response = await fetch("http://192.168.1.116:3000/auth/signin", {
+      const response = await fetch("http://192.168.8.146:3000/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +55,7 @@ const signin = () => {
         return Alert.alert("Incorrect password");
       await SecureStore.setItemAsync("token", result.data.token);
 
-      if (result.status == "SUCCESS") router.push("/home/devices");
+      if (result.status == "SUCCESS") router.push("/logged/main");
 
       console.log("POST success:", result);
     } catch (error) {
@@ -42,76 +65,86 @@ const signin = () => {
     }
   };
 
-  return (
-    <View className="bg-dark h-full w-full">
-      <View className="h-full w-full justify-center items-center">
-        <LinearGradient
-          colors={["#10b981", "#0ea5e9"]}
-          style={{
-            elevation: 5,
-            borderRadius: 35,
-          }}
-          start={{ x: 0, y: 0 }}
-          className="rounded-xl py-2 w-96"
-        >
-          <View className="flex items-center justify-center">
-            <View className="relative">
-              <Text className="font-kbold text-offwhite">SenseFlow</Text>
-              <View className="absolute left-[-40] top-[-4]">
-                <Logo />
-              </View>
-            </View>
-            <View
-              className="flex
-            pt-4 p-4 w-full gap-2"
-            >
-              <View>
-                <Text className="text-xs font-kmedium text-dark">
-                  Personal | Company email
-                </Text>
-                <TextInput
-                  placeholder="abc123@email.com"
-                  className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
-                  value={email}
-                  onChangeText={setEmail}
-                />
-              </View>
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardWillShow", () =>
+      setKeyboardVisible(true)
+    );
+    const hideSub = Keyboard.addListener("keyboardWillHide", () =>
+      setKeyboardVisible(false)
+    );
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
-              <View>
-                <Text className="text-xs font-kmedium text-dark">Password</Text>
-                <TextInput
-                  placeholder="password@123"
-                  className="rounded-lg bg-offwhite h-12 text-sm font-kmedium"
-                  value={pass}
-                  onChangeText={setPass}
-                ></TextInput>
+  useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [keyboardVisible]);
+
+  return (
+    <SafeAreaView className="">
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="h-full px-6">
+            {!keyboardVisible && (
+              <View className="relative h-[38%]">
+                <View className="w-[200] aspect-square">
+                  <Meter />
+                </View>
+                <View className="right-0 bottom-0 absolute aspect-square w-[80]">
+                  <Mobile />
+                </View>
+              </View>
+            )}
+
+            <View className="flex-1 gap-5 justify-center">
+              <Text className="text-3xl font-bold">Sign in Here</Text>
+              <Text className="text-xl">Welcome back you've been missed!</Text>
+              <TextInput
+                onChangeText={setEmail}
+                placeholder="Email"
+                className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+              ></TextInput>
+              <TextInput
+                onChangeText={setPass}
+                placeholder="Password"
+                className="px-6 text-xl w-full h-16 rounded-xl bg-gray-200"
+              ></TextInput>
+              <View className="">
+                <Text className="text-right">Forgot your password?</Text>
+              </View>
+              <View className="justify-center items-center ">
+                <Pressable
+                  onPress={onSignin}
+                  className="w-full h-16 justify-center bg-sky-500 rounded-xl"
+                >
+                  <Text className="text-center text-xl text-offwhite font-semibold">
+                    Sign in
+                  </Text>
+                </Pressable>
               </View>
             </View>
-            <Pressable
-              onPress={onLogin}
-              className="bg-dark py-1 rounded-xl px-10"
-            >
-              <Text className="text-white font-kmedium">Sign in</Text>
-            </Pressable>
-            <View className="mt-2 flex flex-row">
-              <Text className=" font-kmedium text-xs text-gray-300">
-                Not registered?
-              </Text>
-              <Pressable
-                onPress={() => {
-                  router.push("/signup");
-                }}
-              >
-                <Text className="font-kmedium text-xs underline pl-1 text-gray-300">
-                  Sign up
-                </Text>
-              </Pressable>
+            <View className="mb-1">
+              <Text className="text-center py-2">Or continue with</Text>
+              <View className="flex-row justify-center gap-4">
+                <View className="bg-gray-200 rounded-lg p-3 w-14 aspect-square">
+                  <Google />
+                </View>
+                <View className="bg-gray-200 rounded-lg p-3 w-14 aspect-square">
+                  <Apple />
+                </View>
+              </View>
             </View>
           </View>
-        </LinearGradient>
-      </View>
-    </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
-export default signin;
+export default index;
+
+const styles = StyleSheet.create({});

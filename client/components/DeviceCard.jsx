@@ -1,67 +1,129 @@
+import { Pressable, Text, View } from "react-native";
 import { useRouter } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useCurrentFlowmeter } from "../contexts/CurrentFlowmeterContext";
+import { useWebSocket } from "../contexts/WebSocketContext";
+import { useEffect, useState } from "react";
+import IconWaterDrop from "./IconWaterDrop";
+import IconTemp from "./IconTemp";
+import IconFlow from "./IconFlow";
+import { MotiView } from "moti";
 
-const DeviceCard = ({
-  name,
-  condition,
-  rate,
-  temperature,
-  lowerlimit,
-  upperlimit,
-  notes,
-}) => {
+const DeviceCard = ({ data }) => {
   const router = useRouter();
+  const { setCurrentFlowmeter } = useCurrentFlowmeter();
+
+  const { wsData } = useWebSocket();
+  const [flowrate, setFlowrate] = useState(0);
+  const [temperature, setTemperature] = useState(0);
+  const [totalVolume, setTotalVolume] = useState(0);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    if (wsData && data) {
+      if (
+        wsData.hasOwnProperty("product_code") &&
+        data.product_code == wsData.product_code
+      ) {
+        setFlowrate(wsData.flowrate);
+        setTemperature(wsData.temperature);
+        setTotalVolume(wsData.total_volume);
+        setActive(wsData.active);
+      }
+    }
+  }, [wsData]);
+
   return (
-    <Pressable
-      className="p-2 w-full h-52"
-      onPress={() => {
-        router.push("/analyze");
-      }}
+    <MotiView
+      from={{ opacity: 0, scale: 0.5 }}
+      className="flex-1"
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0 }}
+      transition={{ type: "timing", duration: 500 }}
+      style={{}}
     >
-      <View
-        style={{ borderRadius: 10 }}
-        className="bg-dark w-full h-full pl-2 pr-2"
+      <Pressable
+        onPress={() => {
+          router.navigate("./flowmeter/monitor");
+          setCurrentFlowmeter(data);
+        }}
+        className="bg-gray-200 h-32 rounded-xl flex-row p-2"
       >
-        <View className="flex-row w-full h-10 border-white justify-between items-end">
-          <Text className="text-white font-ksemibold">{name}</Text>
-          <View className="flex-row items-end">
-            <Text className="text-white text-xs font-kmedium">Online</Text>
+        <View className="w-[38%] h-full items-center">
+          <View className="relative h-full w-full rounded-tl-lg rounded-bl-lg rounded-lg bg-gray-600 items-center justify-center">
             <View
-              style={{ borderRadius: 10 }}
-              className="ml-2 bg-green-300 h-4 w-4 mb-1"
+              className={`absolute h-3.5 aspect-square rounded-full ${
+                active ? "bg-emerald-500" : "bg-gray-300"
+              } top-2 left-2`}
             ></View>
+            <Text className="text-offwhite text-2xl font-semibold">
+              {data.product_code}
+            </Text>
           </View>
         </View>
-        <View style={{ borderWidth: 0.55 }} className="border-white"></View>
-        <View className="mt-4 flex gap-0.5">
-          <Text className="text-xs font-kmedium text-white">
-            Flow rate: {rate} m³/s
-          </Text>
-          <Text className="text-xs font-kmedium text-white">
-            Temperature: {temperature}
-          </Text>
-          <Text className="text-xs font-kmedium text-white">
-            Operating range: {lowerlimit} - {upperlimit} (m³/s)
-          </Text>
-          <Text className="text-xs font-kmedium text-white ">
-            Notes: {notes}
-          </Text>
-          {condition && (
-            <Text className="mt-2 text-sm font-ksemibold text-emerald-500">
-              {"\u25C9"} Flow is under operating conditions
-            </Text>
-          )}
-          {!condition && (
-            <Text className="mt-2 text-sm font-ksemibold text-red-400">
-              {"\u25C9"} Flow is outside the specified operating range
-            </Text>
-          )}
+        <View className=" flex-1 h-full items-center justify-center">
+          <View className="h-[60%] w-full">
+            <View className="h-full justify-evenly gap-4 flex-row">
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="mt-3 w-14 aspect-square">
+                  <IconFlow />
+                </View>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="w-12 aspect-square">
+                  <IconTemp />
+                </View>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="w-12 aspect-square">
+                  <IconWaterDrop />
+                </View>
+              </View>
+            </View>
+          </View>
+          <View className="flex-1 w-full">
+            <View className="h-full justify-evenly gap-4 flex-row">
+              <View className="flex-1 h-full justify-center items-center">
+                <Text className="text-lg font-semibold">
+                  {flowrate ? Number(flowrate.toFixed(1)) : 0}
+                </Text>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <Text className="text-lg font-semibold">
+                  {temperature ? Number(temperature.toFixed(1)) : 0}
+                </Text>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="">
+                  <Text className="text-lg font-semibold">
+                    {totalVolume ? Number(totalVolume.toFixed(2)) : 0}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <View className="flex-1 w-full">
+            <View className="h-full justify-evenly gap-4 flex-row">
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="">
+                  <Text className="">{`Ls\u207B\u00B9`}</Text>
+                </View>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="">
+                  <Text className="text-sm">{"\u00B0"}C</Text>
+                </View>
+              </View>
+              <View className="flex-1 h-full justify-center items-center">
+                <View className="">
+                  <Text className="">{`L`}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
-      </View>
-    </Pressable>
+      </Pressable>
+    </MotiView>
   );
 };
 
 export default DeviceCard;
-
-const styles = StyleSheet.create({});

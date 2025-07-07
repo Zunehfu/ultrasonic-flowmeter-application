@@ -2,23 +2,23 @@ import { StatusBar, View } from "react-native";
 import { Slot } from "expo-router";
 import { useFonts } from "expo-font";
 import "../global.css";
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+import { useEffect } from "react";
+import { Toaster } from "@masumdev/rn-toast";
 
 const RootLayout = () => {
-  const [loaded] = useFonts({
-    KantoraBlack: require("../assets/fonts/Kontora-Black.otf"),
-    KantoraBold: require("../assets/fonts/Kontora-Bold.otf"),
-    KantoraExtraBlack: require("../assets/fonts/Kontora-ExtraBlack.otf"),
-    KantoraExtraBold: require("../assets/fonts/Kontora-ExtraBold.otf"),
-    KantoraLight: require("../assets/fonts/Kontora-Light.otf"),
-    KantoraMedium: require("../assets/fonts/Kontora-Medium.otf"),
-    KantoraRegular: require("../assets/fonts/Kontora-Regular.otf"),
-    KantoraSemiBold: require("../assets/fonts/Kontora-SemiBold.otf"),
-    KantoraThin: require("../assets/fonts/Kontora-Thin.otf"),
-  });
+  useEffect(() => {
+    console.log("Root Layout mounting ");
+    return () => {
+      console.log("Root layout unmounting");
+    };
+  }, []);
   return (
     <View style={{ flex: 1 }}>
+      <Toaster />
       <StatusBar
-        barStyle="light-content" // or "dark-content"
+        barStyle="dark-content" // or "dark-content"
         backgroundColor="#161716" // Android only
       />
       <Slot />

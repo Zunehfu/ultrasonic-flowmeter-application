@@ -1,24 +1,13 @@
-import { db } from "../utils/database.js";
+import {
+  insertUser,
+  checkEmail,
+  checkUserid,
+  getUserDataFromEmail,
+  fetchUserid,
+} from "../utils/database.js";
 import jwt from "jsonwebtoken";
 import { response } from "../utils/functions.js";
 import { Err } from "../utils/classes.js";
-
-const insertUser = db.prepare(`
-  INSERT INTO users (email, password)
-  VALUES (?, ?)
-`);
-
-const checkEmail = db.prepare(`
-  SELECT 1 FROM users WHERE email = ?
-`);
-
-const checkUserid = db.prepare(`
-  SELECT 1 FROM users WHERE user_id = ?
-`);
-
-const getUserDataFromEmail = db.prepare(`
-  SELECT * FROM users WHERE email = ?
-`);
 
 const userSignup = async (req, res, next) => {
   try {
@@ -36,7 +25,7 @@ const userSignup = async (req, res, next) => {
       throw new Err("USER_ALREADY_EXISTS");
     }
 
-    const result = insertUser.run(req.body.email, req.body.pass);
+    const result = insertUser.run(req.body.email, req.body.pass, req.body.name);
     res.json(
       response(true, "register", "INSERT_SUCCESS", {
         user_id: result.lastInsertRowid,
@@ -93,15 +82,17 @@ const userSignin = async (req, res) => {
   }
 };
 
-const userVerify = (req, res, next) => {
+const userVerify = async (req, res, next) => {
   try {
-    console.log(req.headers);
+    if (!req.headers.authorization) throw new Err("JWT_NOT_FOUND");
     const token = req.headers.authorization.split(" ")[1];
+    console.log("Token: ", token);
     if (!token) throw new Err("JWT_NOT_FOUND");
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET_CODE);
-
+    console.log("decoded", decodedToken);
     const user_data = checkUserid.get(decodedToken.user_id);
+
     if (!user_data) {
       throw new Err("JWT_MALFORMED");
     }
@@ -116,10 +107,41 @@ const userVerify = (req, res, next) => {
     if (err instanceof Err) {
       res.json(response(false, "verify", err.message, {}));
     } else {
+      if (err.message == "jwt expired")
+        return res.json(response(false, "verify", "JWT_MALFORMED", {}));
       res.json(response(false, "verify", "UNEXPECTED_BACKEND_ERROR", {}));
     }
-    console.log(err.message);
   }
 };
 
-export { userSignup, userSignin, userVerify };
+const protectPath = async (req, res, next) => {
+  try {
+    console.log("prot path");
+    if (!req.headers.authorization) throw new Err("JWT_NOT_FOUND");
+    const token = req.headers.authorization.split(" ")[1];
+    console.log("Token: ", token);
+    if (!token) throw new Err("JWT_NOT_FOUND");
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_CODE);
+    console.log("decoded", decodedToken);
+    const user_data = fetchUserid.get(decodedToken.user_id);
+
+    if (!user_data) {
+      throw new Err("JWT_MALFORMED");
+    }
+
+    req.user = user_data;
+    next();
+  } catch (err) {
+    if (err instanceof Err) {
+      res.json(response(false, "protect", err.message, {}));
+    } else {
+      if (err.message == "jwt expired")
+        return res.json(response(false, "protect", "JWT_MALFORMED", {}));
+      console.log(err.message);
+      res.json(response(false, "protect", "UNEXPECTED_BACKEND_ERROR", {}));
+    }
+  }
+};
+
+export { userSignup, userSignin, userVerify, protectPath };
