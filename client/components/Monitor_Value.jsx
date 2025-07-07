@@ -14,7 +14,7 @@ const Monitor_Value = ({ flowrate }) => {
       <View className="justify-center items-center h-[72%] w-[72%] bg-offwhite rounded-full">
         <View>
           <Text className="font-semibold text-7xl text-dark">
-            {flowrate &&  Number(flowrate.toFixed(1)) : 0}
+            {flowrate ? Number(flowrate.toFixed(1)) : 0}
           </Text>
         </View>
       </View>
